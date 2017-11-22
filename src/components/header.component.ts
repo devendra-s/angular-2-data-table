@@ -5,6 +5,7 @@ import { HEADER_STYLE } from "./header.style";
 
 
 @Component({
+    moduleId: module.id,
   selector: 'data-table-header',
   template: HEADER_TEMPLATE,
   styles: [HEADER_STYLE],
@@ -21,4 +22,12 @@ export class DataTableHeader {
     }
 
     constructor(@Inject(forwardRef(() => DataTable)) public dataTable: DataTable) {}
+
+     get searchString() {
+        return this.dataTable.searchString;
+    }
+
+    set searchString(value) {
+        this.dataTable.searchString = String(<any>value); // TODO better way to handle that value of number <input> is string?
+    }
 }

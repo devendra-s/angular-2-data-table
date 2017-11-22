@@ -1,42 +1,16 @@
 export const HEADER_TEMPLATE = `
 <div class="data-table-header">
-    <h4 class="title" [textContent]="dataTable.headerTitle"></h4>
-    <div class="button-panel">
-        <button type="button" class="btn btn-default btn-sm refresh-button"
-            (click)="dataTable.reloadItems()">
-            <span class="glyphicon glyphicon-refresh"></span>
-        </button>
-        <button type="button" class="btn btn-default btn-sm column-selector-button" [class.active]="columnSelectorOpen"
-            (click)="columnSelectorOpen = !columnSelectorOpen; $event.stopPropagation()" >
-            <span class="glyphicon glyphicon-list"></span>
-        </button>
-        <div class="column-selector-wrapper" (click)="$event.stopPropagation()">
-            <div *ngIf="columnSelectorOpen" class="column-selector-box panel panel-default">
-                <div *ngIf="dataTable.expandableRows" class="column-selector-fixed-column checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="dataTable.expandColumnVisible"/>
-                        <span>{{dataTable.translations.expandColumn}}</span>
-                    </label>
-                </div>
-                <div *ngIf="dataTable.indexColumn" class="column-selector-fixed-column checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="dataTable.indexColumnVisible"/>
-                        <span>{{dataTable.translations.indexColumn}}</span>
-                    </label>
-                </div>
-                <div *ngIf="dataTable.selectColumn" class="column-selector-fixed-column checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="dataTable.selectColumnVisible"/>
-                        <span>{{dataTable.translations.selectColumn}}</span>
-                    </label>
-                </div>
-                <div *ngFor="let column of dataTable.columns" class="column-selector-column checkbox">
-                    <label>
-                        <input type="checkbox" [(ngModel)]="column.visible"/>
-                        <span [textContent]="column.header"></span>
-                    </label>
-                </div>
-            </div>
+    <h4 class="col-sm-8" [textContent]="dataTable.headerTitle"></h4>
+    <div class="col-sm-4 no-padding" >
+       <div class="input-group">
+          <input type="text" name="searchStringInput" [ngModel]="searchString" (blur)="searchString = searchStringInput.value"
+                       (keyup.enter)="searchString = searchStringInput.value" (keyup.esc)="searchStringInput.value = searchString" class="form-control input-sm" #searchStringInput placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" class="btn btn-flat btn-sm btn-default" (click)="dataTable.search()"><i class="fa fa-search"></i>
+                </button>
+                <button type="button" name="reset" class="btn btn-flat btn-sm btn-primary" (click)="dataTable.resetSearch()"><i class="fa fa-refresh"></i>
+                </button>
+              </span>
         </div>
     </div>
 </div>

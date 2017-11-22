@@ -4,9 +4,10 @@ import {
 } from '@angular/core';
 import { DataTableColumn } from './column.component';
 import { DataTableRow } from './row.component';
-import { DataTableParams } from './types';
-import { RowCallback } from './types';
-import { DataTableTranslations, defaultTranslations } from './types';
+import { DataTableParams } from '../types/data-table-params.type';
+import { RowCallback } from '../types/row-callback.type';
+import { DataTableTranslations } from '../types/data-table-translations.type';
+import { defaultTranslations } from '../types/default-translations.type';
 import { drag } from '../utils/drag';
 import { TABLE_TEMPLATE } from './table.template';
 import { TABLE_STYLE } from "./table.style";
@@ -14,6 +15,7 @@ import { TABLE_STYLE } from "./table.style";
 
 
 @Component({
+    moduleId: module.id,
   selector: 'data-table',
   template: TABLE_TEMPLATE,
   styles: [TABLE_STYLE]
@@ -70,6 +72,19 @@ export class DataTable implements DataTableParams, OnInit {
 
     private _offset = 0;
     private _limit = 10;
+
+    private _searchString: string;
+
+    @Input()
+    get searchString() {
+        return this._searchString;
+    }
+
+    set searchString(value) {
+        this._offset = 0;
+        this._searchString = value;
+        this._triggerReload();
+    }
 
     @Input()
     get sortBy() {
@@ -207,6 +222,20 @@ export class DataTable implements DataTableParams, OnInit {
         });
     }
 
+    //for searching
+
+    @Output() searching = new EventEmitter();
+
+    search() {
+        this.searching.emit(this._getRemoteParameters());
+    }
+
+    resetSearch(){
+        this._offset = 0;
+        this._searchString = undefined;
+        this._triggerReload();
+    }
+
     // event handlers:
 
     @Output() rowClick = new EventEmitter();
@@ -246,6 +275,9 @@ export class DataTable implements DataTableParams, OnInit {
         if (this.pagination) {
             params.offset = this.offset;
             params.limit = this.limit;
+        }
+        if(this.searchString){
+            params.searchString = this.searchString;
         }
         return params;
     }
